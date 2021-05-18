@@ -4,15 +4,24 @@ import toml
 class core:
 
     BOOT_CONFIGURATION = toml.load(os.getcwd() + "/src/boot.toml")
-    SYSTEM_PATH = BOOT_CONFIGURATION.get("DEFAULT").get("installation_path")
-    DATA_PATH = None
-    STORAGE_PATH = None
+    OS_PATH = BOOT_CONFIGURATION.get("DEFAULT").get("installation_path")
+    DATA_PATH: str = None
+    STORAGE_PATH: str = None
+    SYSTEM_PATH: str = None
+
 
     def __init__(self):
         pass
 
     def createSystem(self):
-        if os.path.exists(self.SYSTEM_PATH + "/system/"):
-            print("system path exists!")
+        if os.path.exists(self.OS_PATH + "/system/"):
+            print("Already installed in the location")
+            self.SYSTEM_PATH = self.OS_PATH + "/system/"
+            self._lockSystem()
         else:
-            os.mkdir(self.SYSTEM_PATH + "/system/")
+            os.mkdir(self.OS_PATH + "/system/")
+            self.SYSTEM_PATH = self.OS_PATH + "/system/"
+
+    def _lockSystem(self):
+        lockfile = open(self.SYSTEM_PATH + "lock", "w")
+        lockfile.write("0")
